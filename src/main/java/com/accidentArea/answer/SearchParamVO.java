@@ -8,6 +8,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class SearchParamVO {
-	public String searchColumn;
-	public String searchWord;
+	private String searchColumn;
+	private String searchWord;
+	private String searchYear="2022";
+	private String searchSiDo="11";
+	private String searchGuGun="680";
+	private String searchPageNo="1";
 }

@@ -17,9 +17,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import org.modelmapper.ModelMapper;
+
+import com.accidentArea.answer.dto.AreaCodeDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -45,6 +49,9 @@ public class AreaCode implements Serializable{
 	@Column(name = "VIEW_ORDER", nullable=true, insertable=true, updatable=true)
 	private Integer viewOrder;
 	
+	@Column(name = "AREA_DEPTH", length=2, nullable=true, insertable=true, updatable=true)
+	private String areaDepth;
+	
 	@JsonIgnore
 	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)//LAZY 지연호출, EAGER 즉시호출
     @JoinColumn(name = "PARENT_CODE", insertable=false, updatable=false)
@@ -56,4 +63,19 @@ public class AreaCode implements Serializable{
 	@OrderBy("viewOrder asc")
 	private List<AreaCode> children = new ArrayList<AreaCode>();
 	
+	@Builder(builderClassName = "ByAreaCodeBuilder", builderMethodName = "ByAllBuilder")
+	public AreaCode(String areaCode, String areaName, String parentCode, Integer viewOrder) {
+		this.areaCode = areaCode;
+		this.areaName = areaName;
+		this.parentCode = parentCode;
+		this.viewOrder = viewOrder;
+	}
+	
+	public AreaCodeDTO entityToDTO() {
+		AreaCodeDTO areaCodeDTO = new AreaCodeDTO();
+		ModelMapper mMapper = new ModelMapper();
+		mMapper.map(this, areaCodeDTO); 
+		
+		return areaCodeDTO;
+    }
 }

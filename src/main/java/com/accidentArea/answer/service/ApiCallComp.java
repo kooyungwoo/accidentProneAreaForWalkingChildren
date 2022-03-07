@@ -1,34 +1,60 @@
 package com.accidentArea.answer.service;
 
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.accidentArea.answer.SearchParamVO;
 
 @Component("apiCallComp")
 public class ApiCallComp {
-	//http://apis.data.go.kr/B552061/frequentzoneChild/getRestFrequentzoneChild?ServiceKey=EtJfB1nu62e79mlcOeOOL8k49BIKChfZAdIc3PbFAfIzM6yLr71kyikvvMdEyj7WAO1VExFUf0q2hdivC9upLQ==&searchYearCd=2017&siDo=11&guGun=680&numOfRows=10&pageNo=1&type=json
+	private String serviceUrl = "http://apis.data.go.kr/B552061/frequentzoneChild/getRestFrequentzoneChild";
+	
+	@Value("${openApi.serviceKey}")
+	private String serviceKey;
+	
+	public String callAccidentAreaInfo(SearchParamVO paramVO) throws ClientProtocolException, IOException {
+		HttpClient client 				= HttpClientBuilder.create().build();
+        HttpGet request 				= new HttpGet(serviceUrl+"?"+URLEncodedUtils.format(makeParameterList(paramVO.getSearchYear(), paramVO.getSearchSiDo(), paramVO.getSearchGuGun(), paramVO.getSearchPageNo()), "utf-8"));
+        HttpResponse response 	= client.execute(request);
+        HttpEntity entity 				= response.getEntity();
+        
+        String returnJson				= EntityUtils.toString(entity, "UTF-8");
+		return returnJson;
+	}
+	
+	public List<BasicNameValuePair> makeParameterList(String searchYearCd, String siDo, String guGun, String searchPageNo){
+		List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+		
+        params.add(new BasicNameValuePair("ServiceKey", serviceKey));
+        params.add(new BasicNameValuePair("type", "json"));
+        params.add(new BasicNameValuePair("searchYearCd", searchYearCd));
+        params.add(new BasicNameValuePair("siDo", siDo));
+        params.add(new BasicNameValuePair("guGun", guGun));
+        params.add(new BasicNameValuePair("numOfRows", "10"));
+        params.add(new BasicNameValuePair("pageNo", searchPageNo));        
+        
+        return params;
+	}
+	
 	/*
-	afos_fid 다발지역FID
-	afos_id 다발지역ID
-	bjd_cd 법정동코드
-	spot_cd 지점코드
-	sido_sgg_nm 시도시군구명
-	spot_nm 지점명
-	occrrnc_cnt 발생건수
-	caslt_cnt 사상자수
-	dth_dnv_cnt 사망자수
-	se_dnv_cnt 중상자수
-	sl_dnv_cnt 경상자수
-	wnd_dnv_cnt 부상신고자수
-	geom_json 다발지역폴리곤
-	lo_crd 경도
-	la_crd 위도
-
-	totalCount 총건수
-	numOfRows 검색건수
-	pageNo 페이지 번호
-
-	resultCode 코드결과 
-	resultMsg 결과 메시지
-	*/
+	 URIBuilder builder = new URIBuilder();
+	builder.setScheme("http").setHost(host).setPort(port).setPath(yourpath)
+	.setParameter("parts", "all")
+	.setParameter("action", "finish");
+	 */	
 	
-	
+	//http://apis.data.go.kr/B552061/frequentzoneChild/getRestFrequentzoneChild?ServiceKey=EtJfB1nu62e79mlcOeOOL8k49BIKChfZAdIc3PbFAfIzM6yLr71kyikvvMdEyj7WAO1VExFUf0q2hdivC9upLQ==&searchYearCd=2017&siDo=11&guGun=680&numOfRows=10&pageNo=1&type=json
 }
