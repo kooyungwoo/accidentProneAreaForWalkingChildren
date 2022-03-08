@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,14 +19,16 @@ import com.accidentArea.answer.service.ApiCallComp;
 import com.accidentArea.answer.service.KoreaAreaCodeService;
 
 @RestController("areaCodeController")
-@RequestMapping("**/area-code")
+@RequestMapping("/areacode")
 @CrossOrigin(origins = "*")
 public class AreaCodeController {
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	@Autowired
 	@Qualifier("apiCallComp")
 	private ApiCallComp apiCallComp;
 	
+	@Autowired
 	@Qualifier("koreaAreaCodeService")
 	private KoreaAreaCodeService koreaAreaCodeService;
 	
@@ -53,7 +56,7 @@ public class AreaCodeController {
 		return yearList;
 	}
 	
-	@RequestMapping(value="/siDo/list", method = RequestMethod.GET)
+	@RequestMapping(value="/sido/list", method = RequestMethod.GET)
 	public List<AreaCodeDTO> siDoList() throws Exception{
 		return koreaAreaCodeService.koreaAreaCodeList("1");
 	}
