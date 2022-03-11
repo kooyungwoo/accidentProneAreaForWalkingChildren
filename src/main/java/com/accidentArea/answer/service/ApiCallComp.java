@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -22,6 +23,7 @@ import com.accidentArea.answer.SearchParamVO;
 public class ApiCallComp {
 	private String serviceUrl = "http://apis.data.go.kr/B552061/frequentzoneChild/getRestFrequentzoneChild";
 	
+	//application.properties의 설정 정보를 가지고 올때 @Value("${설정key}") 형식으로 호출
 	@Value("${openApi.serviceKey}")
 	private String serviceKey;
 	
@@ -41,12 +43,21 @@ public class ApiCallComp {
         params.add(new BasicNameValuePair("ServiceKey", serviceKey));
         params.add(new BasicNameValuePair("type", "json"));
         params.add(new BasicNameValuePair("searchYearCd", searchYearCd));
-        params.add(new BasicNameValuePair("siDo", siDo));
-        params.add(new BasicNameValuePair("guGun", guGun));
+        params.add(new BasicNameValuePair("siDo", makeSiDoCode(siDo)));
+        params.add(new BasicNameValuePair("guGun", makeGuGunCode(guGun)));
         params.add(new BasicNameValuePair("numOfRows", "10"));
         params.add(new BasicNameValuePair("pageNo", searchPageNo));        
         
         return params;
+	}
+	
+	//법정동 코드값 앞 2자리만 사용 (ex>4111100000 -> 41)
+	public String makeSiDoCode(String siDo) {
+		return StringUtils.substring(siDo, 0, 2);
+	}
+	//법정동 코드값 2~5자리만 사용  (ex>4111100000 -> 111)
+	public String makeGuGunCode(String guGun) {
+		return StringUtils.substring(guGun, 2, 5);
 	}
 	
 	/*
