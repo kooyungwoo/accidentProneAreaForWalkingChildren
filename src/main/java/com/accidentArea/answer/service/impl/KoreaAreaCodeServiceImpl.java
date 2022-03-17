@@ -27,8 +27,6 @@ public class KoreaAreaCodeServiceImpl implements KoreaAreaCodeService {
 		List<AreaCode> dataList 					= koreaAreaCodeRepository.findByAreaDepth(depth, Sort.by(Sort.Direction.ASC, "viewOrder"));
 		List<AreaCodeDTO> areaCodeList 	= dataList.stream().map(AreaCode::entityToDTO).collect(Collectors.toList());
 		
-		logger.debug("areaCodeList: "+areaCodeList);
-		
 		return areaCodeList;
 	}
 
@@ -36,6 +34,7 @@ public class KoreaAreaCodeServiceImpl implements KoreaAreaCodeService {
 	public List<AreaCodeDTO> koreaAreaCodeChildList(String parentCode) throws Exception {
 		List<AreaCode> dataList 					= koreaAreaCodeRepository.findByParentCode(parentCode, Sort.by(Sort.Direction.ASC, "viewOrder"));
 		List<AreaCodeDTO> areaCodeList 	= dataList.stream().map(AreaCode::entityToDTO).collect(Collectors.toList());
+		
 		return areaCodeList;
 	}
 
